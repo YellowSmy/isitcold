@@ -8,7 +8,7 @@ function Home() {
     useEffect(() => {
         const fetchWeather = async() => {
             const data = await getPreviousWeather(108);
-            setWeatherData(data);
+            setWeatherData(data.avgTa);
         }
 
         fetchWeather();
