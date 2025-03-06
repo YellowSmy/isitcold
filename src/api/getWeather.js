@@ -47,7 +47,7 @@ function getDate(updateTime) {
 // 현재 정보 조회
 // Return Value: 기온/풍속
 // 초단기 실황 정보가 정시 40분에 생성됨. 따라서 그에 상응하는 코드 필요
-export const getWeather = async(lat, lng) => {
+export const getWeather = async(x, y) => {
   const update_time = Array.from({length:24}, (_, i) => i * 100 + 40);
   const date = getDate(update_time);
 
@@ -56,7 +56,7 @@ export const getWeather = async(lat, lng) => {
             + `?serviceKey=${NOW_SERVICE_KEY}`
             + "&dataType=JSON&numOfRows=10&pageNo=1"
             + `&base_date=${date.base_date}&base_time=${date.base_time}`
-            + `&nx=${lat}&ny=${lng}`;
+            + `&nx=${x}&ny=${y}`;
 
   const {data: {response: {body: {items: {item}}}}} = await axios.get(URL);
 
@@ -71,7 +71,7 @@ export const getWeather = async(lat, lng) => {
 
 //단기 날씨 예보
 // Return Value: 최저/최고/1시간 기온, 강수확률/형태, 강수/적설량, 습도, 풍속
-export const getDayForcast = async(lat, lng) => {
+export const getDayForcast = async(x, y) => {
   const update_time = Array.from({length:8}, (_, i) => 300*i + 210);
   const date = getDate(update_time);
 
@@ -79,7 +79,7 @@ export const getDayForcast = async(lat, lng) => {
             + `?serviceKey=${NOW_SERVICE_KEY}`
             + "&dataType=JSON&numOfRows=1000&pageNo=1"
             + `&base_date=${date.base_date}&base_time=${date.base_time}`
-            + `&nx=${lat}&ny=${lng}`;
+            + `&nx=${x}&ny=${y}`;
     const {data: {response: {body: {items: {item: rawData}}}}} = await axios.get(URL);
     
     //filter
