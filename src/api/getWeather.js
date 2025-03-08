@@ -21,8 +21,19 @@ export const getWeather = async(x, y) => {
     + `&nx=${x}&ny=${y}`;
 
   try{
-    const {data: {response: {body: {items: {item}}}}} = await axios.get(URL);
+    const {data} = await axios.get(URL);
 
+    //Error
+    if (data?.response?.header?.resultCode != "00") {
+      return {
+        error: true,
+        code: data.response.header.resultMsg,
+        msg: "잠시 후 다시 시도해주세요."
+      };
+    }
+    
+    //filter
+    const item = data.response.body.items.item;
     const filteredData = item.filter(item => item.category === "T1H" || item.category === "REH" || item.category === "WSD");
     const result = filteredData.reduce((acc, curr) => {
       acc[curr.category] = curr.obsrValue;
@@ -31,11 +42,14 @@ export const getWeather = async(x, y) => {
 
   return result;
 
-  } catch (e) {
-    const {data: {response: {header: {resultMsg}}}} = await axios.get(URL);
-    console.log(URL);
-    console.log(resultMsg);
-  } 
+  } catch (e) { 
+    //Response Error
+    return {
+      error: true,
+      code: e.message || "UNKNOWN_ERROR",
+      msg: "서버 통신 중 문제가 발생했습니다."
+    };
+  }
 };
 
 
@@ -52,9 +66,19 @@ export const getDayForcast = async(x, y) => {
             + `&nx=${x}&ny=${y}`;
     
     try{
-      const {data: {response: {body: {items: {item: rawData}}}}} = await axios.get(URL);
+      const {data} = await axios.get(URL);
+
+      //API Error
+      if (data?.response?.header?.resultCode != "00") {
+        return {
+          error: true,
+          code: data.response.header.resultMsg,
+          msg: "잠시 후 다시 시도해주세요."
+        };
+      }
       
       //filter
+      const rawData = data.response.body.items.item;
       const categories = ['SKY', 'TMP', 'TMN', 'TMX', 'POP', 'PCP', 'PTY', 'SNO', 'REH', 'WSD'];
       const result = rawData.reduce((acc, curr) => {
           const { fcstTime, category, fcstValue } = curr;        
@@ -70,10 +94,13 @@ export const getDayForcast = async(x, y) => {
 
       return result;
 
-    } catch (e) {
-      const {data: {response: {header: {resultMsg}}}} = await axios.get(URL);
-      console.log(URL);
-      console.log(resultMsg);
+    } catch (e) { 
+      //Response Error
+      return {
+        error: true,
+        code: e.message || "UNKNOWN_ERROR",
+        msg: "서버 통신 중 문제가 발생했습니다."
+      };
     } 
 }
 
@@ -93,10 +120,21 @@ export const getPreviousWeather = async(region) => {
           + `&stnIds=${region}`;
 
   try {
-    const {data: {response: {body: {items: {item}}}}} = await axios.get(URL);
-    const rawData = item[0];
+    const {data} = await axios.get(URL);
+
+    //Error
+    if (data?.response?.header?.resultCode != "00") {
+      return {
+        error: true,
+        code: data.response.header.resultMsg,
+        msg: "잠시 후 다시 시도해주세요."
+      };
+    }
 
     //fiter
+    const item = data.response.body.items.item;
+    const rawData = item[0];
+    
     const result = {};
     const categories = ['stnNm', 'tm', 'avgTa', 'minTa', 'maxTa', 'avgWs', 'avgRhm']; 
 
@@ -107,9 +145,12 @@ export const getPreviousWeather = async(region) => {
 
     return result;
 
-  } catch (e) {
-    const {data: {response: {header: {resultMsg}}}} = await axios.get(URL);
-    console.log(URL);
-    console.log(resultMsg);
-  }
+  } catch (e) { 
+    //Response Error
+    return {
+      error: true,
+      code: e.message || "UNKNOWN_ERROR",
+      msg: "서버 통신 중 문제가 발생했습니다."
+    };
+  } 
 }

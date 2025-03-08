@@ -6,10 +6,12 @@ import { getPreviousWeather } from "../api/getWeather";
 import { getApparentTemp } from "../utils/getApparentTemp";
 
 function Temperature({coordinate, point}) {
-    const [Weather, setWeather] = useState(null);
-    const [PreviousWeather, setPreviousWeather] = useState(null);
+    const [weather, setWeather] = useState(null);
+    const [previousWeather, setPreviousWeather] = useState(null);
     const [apparentTemp, setApparentTemp] = useState({now : 0, previous : 0})
 
+    const [weatherError, setWeatherError] = useState(null);
+    const [PWeatherError, setPWeatherError] = useState(null);
     const [isDataLoaded, setIsDataLoaded] = useState(false); 
     
     //Temp
@@ -19,6 +21,14 @@ function Temperature({coordinate, point}) {
                 getWeather(coordinate.x, coordinate.y),
                 getPreviousWeather(point.Point)
             ]);
+
+            if(weatherData.error) {
+                setWeatherError({code: weatherData.code, msg: weatherData.msg});
+            } else if(previousData.error) {
+                setPWeatherError({code: previousData.code, msg: previousData.msg});
+            }
+
+
             setWeather(weatherData);
             setPreviousWeather(previousData);
         };
@@ -27,30 +37,32 @@ function Temperature({coordinate, point}) {
 
     //apparent Temp 
     useEffect(() => {
-        if (!PreviousWeather) return;
+        if (!previousWeather) return;
         setApparentTemp({
-            now: getApparentTemp(Weather.T1H, Weather.REH, Weather.WSD),
-            previous: getApparentTemp(PreviousWeather.avgTa, PreviousWeather.avgRhm, PreviousWeather.avgWs)
+            now: getApparentTemp(weather.T1H, weather.REH, weather.WSD),
+            previous: getApparentTemp(previousWeather.avgTa, previousWeather.avgRhm, previousWeather.avgWs)
         });
 
         setIsDataLoaded(true); 
-    }, [Weather, PreviousWeather])
-
-    
+    }, [weather, previousWeather])
+  
     return (
         <div>
             {isDataLoaded ? (
-                //TODO: 체감기온 fomula util로 불러오기.
                 <div>
-                    <p>현재 기온: {Weather.T1H} / 체감 기온: {apparentTemp.now}</p>
-                    <p>작년 기온: {PreviousWeather.avgTa} / 체감 기온: {apparentTemp.previous}</p>
+                    <span>현재 기온: {weather.T1H} / 작년 기온: {previousWeather.avgTa} </span>
+                    <p>올해가 작년보다 {(previousWeather.avgTa - weather.T1H).toFixed(1)} 차이 나요</p>
                     <br/>
-                    <p>올해가 작년보다 {(PreviousWeather.avgTa - Weather.T1H).toFixed(1)} 차이 나요</p>
-                    <p>체감기온은 올해가 작년보다 {(apparentTemp.previous - apparentTemp.now)} 차이 나요</p>
+                    <span>체감 기온: {apparentTemp.now} / 체감 기온: {apparentTemp.previous}</span>                
+                    <p>체감기온은 올해가 작년보다 {(apparentTemp.previous - apparentTemp.now).toFixed(1)} 차이 나요</p>
                 </div>    
             ) : (
                 <p>Loading....</p>
             )}
+
+            {/*Error Example*/}
+            {weatherError ? <p>{weatherError.msg}</p> : null}
+            {PWeatherError ? <p>{PWeatherError.msg}</p> : null}
         </div>
     );
 }
