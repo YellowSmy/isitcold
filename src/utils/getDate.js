@@ -1,8 +1,7 @@
 //Date Function
 export function getDate(updateTimes) {
     const today = new Date();
-    //const current_time = (today.getHours()*100) + today.getMinutes();
-    const current_time = 100;
+    const current_time = (today.getHours()*100) + today.getMinutes();
     
     let base_date, last_base_year, base_time;
   
