@@ -1,5 +1,7 @@
+@import url(//fonts.googleapis.com/earlyaccess/nanumgothic.css); 
+
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: 'Nanum Gothic';
   line-height: 1.5;
   font-weight: 400;
 

@@ -1,0 +1,30 @@
+.diff {
+    height: 100px;
+    width: 150px;
+
+    display: flex;
+    flex-flow: column;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-right: 15px;
+
+    border: 1px solid;
+    border-radius: 20px;
+}
+
+.title {
+    font-size: 13px;
+}
+.number {
+    font-size: 15px;
+}
+
+.high {
+    color: red;
+}
+.low {
+    color: blue;
+}
+.none {
+    color: gray;
+}

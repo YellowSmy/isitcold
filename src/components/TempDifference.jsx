@@ -9,21 +9,21 @@ function TempDifference({type, now, previous}) {
     function render(sign) {
         if(sign == -1) {
             return (
-                <div>
+                <div className="diff">
                     <p>{type} 기온차</p>
-                    <span className="low">{diff.toFixed(1)} °C</span>
+                    <span className="number low">{diff.toFixed(1)} °C</span>
                 </div>); 
         } else if(sign == 1) {
             return (
-                <div>
-                    <p>{type} 기온차</p>
-                    <span className="high">{diff.toFixed(1)} °C</span>
+                <div className="diff">
+                    <p className="title">{type} 기온차</p>
+                    <p className="number high">▲ {diff.toFixed(1)} °C</p>
                 </div>); 
         } else {
             return (
-                <div>
-                    <p>{type} 기온차</p>
-                    <span className="none">{diff.toFixed(1)} °C</span>
+                <div className="diff">
+                    <p className="title">{type} 기온차</p>
+                    <span className="number none">{diff.toFixed(1)} °C</span>
                 </div>); 
         }
     }

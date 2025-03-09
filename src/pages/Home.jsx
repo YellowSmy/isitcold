@@ -85,29 +85,37 @@ function Home() {
 
     //destructuring
     const { T1H, REH, WSD } = weatherInfo.weather.data || {};
-    const { avgTa, avgRhm, avgWs } = weatherInfo.previousWeather.data || {};
+    const { avgTa, avgRhm, avgWs, minTa } = weatherInfo.previousWeather.data || {};
     const { data: forcastData } = weatherInfo.forcast || {};
 
     return (
-        <section className="container">
+        <section>
             {isLoading ? (
                 <p>Loading....</p>
             ) : (
-                <section className="weather-container">
-                    <p>지역: {locationData.point.Name}</p>
-                    <Temperature type={"현재"} temp={T1H} 
-                                apparentTemp={getApparentTemp(T1H, REH, WSD)}            
-                                error={weatherInfo.weather.error}  />
+                <section className="container">
+                    <div className="region">
+                        <span className="material-symbols-outlined region-icon">location_on</span>
+                        <span className="city"> {locationData.point.Name} </span>
+                    </div>
 
-                    <Temperature type={"과거"} temp={avgTa}
-                                apparentTemp={getApparentTemp(avgTa, avgRhm, avgWs)} 
-                                error={weatherInfo.previousWeather.error}  />
-
-                    <TempDifference type={null} now={T1H} previous={avgTa} />
-                    <TempDifference type={"체감온도"} now={getApparentTemp(T1H, REH, WSD)} 
-                                    previous={getApparentTemp(avgTa, avgRhm, avgWs)} />
-
-                    <Forcast forcastData={forcastData} error={weatherInfo.forcast.error}/>
+                    <div className="temp-show-container">
+                        <Temperature type={"현재"} temp={T1H} 
+                                    apparentTemp={getApparentTemp(T1H, REH, WSD)}            
+                                    error={weatherInfo.weather.error} />
+                        <div className="vertical-line" />
+                        <Temperature type={"과거"} temp={avgTa}
+                                    apparentTemp={getApparentTemp(avgTa, avgRhm, avgWs)} 
+                                    error={weatherInfo.previousWeather.error} />
+                    </div>
+                    
+                    <div className="diff-container">
+                        <TempDifference type={null} now={T1H} previous={avgTa} />
+                        <TempDifference type={"체감온도"} now={getApparentTemp(T1H, REH, WSD)} 
+                                        previous={getApparentTemp(avgTa, avgRhm, avgWs)} />
+                        <TempDifference type={"최저온도"} now={T1H} previous={minTa} />
+                    </div>
+                    
                 </section>
             )}
         </section>
