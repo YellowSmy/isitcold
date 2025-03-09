@@ -1,54 +1,33 @@
-import { useEffect, useState } from "react";
-
-import { getDayForcast } from "../api/getWeather";
+import React from "react";
 
 const codeSKY = { 1: "맑음", 3: "구름없음", 4: "흐림" };
 const codePTY = { 0: " ", 1: "(비)", 2: "(비/눈)",3: "(눈)", 4: "(소나기)" };
 
 
-function Forcast({nx, ny}) {
-    const [forcastData, setForcastData] = useState(null);
-    const [timeOrder, setTimeOrder] = useState(null);
-
-    const [forcastError, setForcastError] = useState(null);
-    const [isDataLoaded, setIsDataLoaded] = useState(false); 
-
-    useEffect(() => {
-        const fetchForcast = async () => {
-            const data = await getDayForcast(nx, ny);
-            
-            if(data.error) {
-                setForcastError({code: data.code, msg: data.msg});
-            }
-            
-            setForcastData(data);
-        };
-        fetchForcast();
-    }, [nx, ny]);
-
-    //forcast parsing
-    useEffect(() => {
-        if(!forcastData) return;
-        const sortedKeys = Object.keys(forcastData).sort((a, b) => {
-             return Number(a) - Number(b);});
-
-        setTimeOrder(sortedKeys);
-        setIsDataLoaded(true); 
-    }, [forcastData])
-
+function Forcast({forcastData, error}) {
     //render function
-    function forcastDisplay(order, data) {
+    function forcastDisplay(data) {
         let result = [];
+        const order = Object.keys(data).sort((a, b) => {
+            return Number(a) - Number(b);});
 
         for(let i=0; i<order.length; i++) {
             const time = order[i]
             result.push(
                 <div key={time}>
-                    <p>{time}시</p>
-                    <p>날씨: {[data[time].SKY].map(code => codeSKY[code])} <br/>
-                       기온: {data[time].TMP} <br/>
-                       강수확률: {data[time].POP} {[data[time].PTY].map(code => codePTY[code])}%
-                       강수량: {data[time].PCP}  적설량: {data[time.SNO]}
+                    <p>{time.slice(0,2)}시</p>
+                    <p>{[data[time].SKY].map(code => codeSKY[code])} <br/>
+                       {data[time].TMP} °C
+                       <br/>
+                       {data[time].POP && <span>강수확률: {data[time].POP} %</span> } 
+                       {data[time].PTY != 0 && <span>({[data[time].PTY].map(code => codePTY[code])})</span>}
+                       <br/>
+                       {(data[time].PCP != "강수없음" && data[time].PCP != "0")
+                        && <span>강수량: {data[time].PCP}</span>} 
+
+                       {(data[time].SNO != "적설없음" && data[time].SNO != "0") 
+                        && <span>적설량: {data[time.SNO]}</span>}
+                        
                     </p>
                     <br/><br/>
                 </div>
@@ -59,14 +38,11 @@ function Forcast({nx, ny}) {
 
     return (
         <div>
-            {isDataLoaded ? (
-                forcastDisplay(timeOrder,forcastData)
+            {error ? (
+                <p>{error.msg}</p> 
             ) : (
-                <p>Loading....</p>
-            )}
-
-            {/*Error Example*/}
-            {forcastError ? <p>{forcastError.msg}</p> : null}
+                forcastDisplay(forcastData)
+            )}        
         </div>
     );
 }
