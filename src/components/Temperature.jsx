@@ -6,7 +6,7 @@ import "../styles/Temperature.css"
 
 function Temperature({type, temp, apparentTemp, error}) {
     return (
-        <div>
+        <>
             {error ? (
                 <div className="error">
                     {error.msg}
@@ -18,7 +18,7 @@ function Temperature({type, temp, apparentTemp, error}) {
                     <span className="apparent">체감기온 {apparentTemp}°</span>                
                 </div> 
             )}
-        </div>
+        </>
     );
 }
 

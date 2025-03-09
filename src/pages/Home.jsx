@@ -85,15 +85,15 @@ function Home() {
 
     //destructuring
     const { T1H, REH, WSD } = weatherInfo.weather.data || {};
-    const { avgTa, avgRhm, avgWs, minTa } = weatherInfo.previousWeather.data || {};
+    const { avgTa, minTa, avgRhm, avgWs } = weatherInfo.previousWeather.data || {};
     const { data: forcastData } = weatherInfo.forcast || {};
 
     return (
-        <section>
+        <>
             {isLoading ? (
                 <p>Loading....</p>
             ) : (
-                <section className="container">
+                <>
                     <div className="region">
                         <span className="material-symbols-outlined region-icon">location_on</span>
                         <span className="city"> {locationData.point.Name} </span>
@@ -116,9 +116,9 @@ function Home() {
                         <TempDifference type={"최저온도"} now={T1H} previous={minTa} />
                     </div>
                     
-                </section>
+                </>
             )}
-        </section>
+        </>
     );
 }
 

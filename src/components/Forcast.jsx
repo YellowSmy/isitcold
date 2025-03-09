@@ -37,13 +37,13 @@ function Forcast({forcastData, error}) {
     }
 
     return (
-        <div>
+        <>
             {error ? (
                 <p>{error.msg}</p> 
             ) : (
                 forcastDisplay(forcastData)
             )}        
-        </div>
+        </>
     );
 }
 
