@@ -3,7 +3,6 @@ import useCurrentLocation from "../hooks/useCurrentLocation";
 
 import Temperature from "../components/Temperature";
 import TempDifference from "../components/TempDifference";
-import Forcast from "../components/Forcast";
 
 import {getWeather, getPreviousWeather, getDayForcast} from "../api/getWeather"
 
@@ -21,6 +20,7 @@ const geolocationOptions = {
 
 
 function Home() {
+    // !!STATE!!
     //load
     const [isLoading, setIsLoading] = useState(true);
 
@@ -36,9 +36,19 @@ function Home() {
     const [weatherInfo, setWeatherInfo] = useState({
         weather: { data: null, error: null },
         previousWeather: { data: null, error: null },
-        forcast: { data: null, error: null }
+        forcast: { data: null, error: null },
     });
 
+    //input
+    const [cityInput, setCityInput] = useState(() => ({
+        name: "서울", 
+        lat: 37.5714, 
+        lon: 126.9658,
+        point: 108,
+    }));
+    
+
+    // !!EFFECT!!
     //Coordinate convert
     useEffect(()=> {
         if (location.isLoading) return;     
@@ -115,7 +125,6 @@ function Home() {
                                         previous={getApparentTemp(avgTa, avgRhm, avgWs)} />
                         <TempDifference type={"최저온도"} now={T1H} previous={minTa} />
                     </div>
-                    
                 </>
             )}
         </>
