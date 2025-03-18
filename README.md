@@ -1,7 +1,6 @@
 # Is it Cold? (추워요?)
 **기온 비교 및 날씨 예보 서비스**
 > Technology Stack : **React** <br>
-> 회고록 : https://velog.io/@yellowsmy
 
 <br>
 <p align="center">
